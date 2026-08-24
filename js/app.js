@@ -288,5 +288,3 @@ function populateClassDropdowns() {
 // ==========================================
 // INITIALIZE APP
 // ==========================================
-
-loadDataFromSupabase();
