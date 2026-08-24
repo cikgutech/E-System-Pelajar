@@ -25,14 +25,23 @@ let kehadiranData = {};
 const todayStr =
     new Date().toISOString().split('T')[0];
 
-document.getElementById('khTarikhHarian').value =
-    todayStr;
+const khTarikhHarian =
+    document.getElementById('khTarikhHarian');
 
-document.getElementById('lapTarikhMula').value =
-    todayStr;
+const lapTarikhMula =
+    document.getElementById('lapTarikhMula');
 
-document.getElementById('lapTarikhAkhir').value =
-    todayStr;
+const lapTarikhAkhir =
+    document.getElementById('lapTarikhAkhir');
+
+if (khTarikhHarian)
+    khTarikhHarian.value = todayStr;
+
+if (lapTarikhMula)
+    lapTarikhMula.value = todayStr;
+
+if (lapTarikhAkhir)
+    lapTarikhAkhir.value = todayStr;
 
 
 // ==========================================
@@ -275,3 +284,9 @@ function populateClassDropdowns() {
     // Homework dropdowns
     renderKerjaRumahDropdowns();
 }
+
+// ==========================================
+// INITIALIZE APP
+// ==========================================
+
+loadDataFromSupabase();
