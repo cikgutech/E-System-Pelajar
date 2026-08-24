@@ -76,7 +76,5 @@ function applyConfig() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("CONFIG LOADED:", CONFIG);
-    applyConfig();
+document.addEventListener("DOMContentLoaded", applyConfig);
 });
