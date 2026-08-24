@@ -73,41 +73,6 @@ function applyConfig() {
     if (dashboardTeacherName) {
         dashboardTeacherName.textContent =
             CONFIG.teacherName;
-        // Laporan RPH
-    const reportSchoolName =
-        document.getElementById("reportSchoolName");
-
-    const reportTeacherName =
-        document.getElementById("reportTeacherName");
-
-    const signatureTeacherName =
-        document.getElementById("signatureTeacherName");
-
-    const signatureTeacherPosition =
-        document.getElementById("signatureTeacherPosition");
-
-    const signatureSchoolName =
-        document.getElementById("signatureSchoolName");
-
-    if (reportSchoolName)
-        reportSchoolName.textContent =
-            CONFIG.schoolName.toUpperCase();
-
-    if (reportTeacherName)
-        reportTeacherName.textContent =
-            CONFIG.teacherName.toUpperCase();
-
-    if (signatureTeacherName)
-        signatureTeacherName.textContent =
-            CONFIG.teacherName.toUpperCase();
-
-    if (signatureTeacherPosition)
-        signatureTeacherPosition.textContent =
-            CONFIG.teacherPosition;
-
-    if (signatureSchoolName)
-        signatureSchoolName.textContent =
-            CONFIG.schoolName;    
     }
 }
 
