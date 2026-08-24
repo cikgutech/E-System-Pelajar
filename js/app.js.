@@ -1,0 +1,277 @@
+// ==========================================
+// APP CORE
+// ==========================================
+
+// Supabase connection
+const db = supabase.createClient(
+    CONFIG.supabaseUrl,
+    CONFIG.supabaseKey
+);
+
+
+// ==========================================
+// GLOBAL DATA
+// ==========================================
+
+let muridList = [];
+let kerjaRumahList = [];
+let kehadiranData = {};
+
+
+// ==========================================
+// DEFAULT DATES
+// ==========================================
+
+const todayStr =
+    new Date().toISOString().split('T')[0];
+
+document.getElementById('khTarikhHarian').value =
+    todayStr;
+
+document.getElementById('lapTarikhMula').value =
+    todayStr;
+
+document.getElementById('lapTarikhAkhir').value =
+    todayStr;
+
+
+// ==========================================
+// SECTION / NAVIGATION
+// ==========================================
+
+function showSection(sectionId) {
+
+    document
+        .querySelectorAll('.view-section')
+        .forEach(el =>
+            el.classList.remove('active')
+        );
+
+    document
+        .querySelectorAll('.nav-btn')
+        .forEach(el =>
+            el.classList.remove('active')
+        );
+
+    document.getElementById(
+        'section-dashboard'
+    ).style.display = 'none';
+
+
+    if (sectionId === 'dashboard') {
+
+        document.getElementById(
+            'section-dashboard'
+        ).style.display = 'block';
+
+        document.getElementById(
+            'btn-dashboard'
+        ).classList.add('active');
+
+    } else {
+
+        document.getElementById(
+            'section-' + sectionId
+        ).classList.add('active');
+
+        let btn =
+            document.getElementById(
+                'btn-' + sectionId
+            );
+
+        if (btn) {
+            btn.classList.add('active');
+        }
+    }
+
+
+    // Render module when opened
+    if (sectionId === 'kehadiran') {
+        renderKehadiranHarian();
+    }
+
+    if (sectionId === 'kerjarumah') {
+        renderKerjaRumah();
+    }
+
+    if (sectionId === 'murid') {
+        renderMurid();
+    }
+
+    if (sectionId === 'laporan') {
+        renderLaporanRPH();
+    }
+}
+
+
+// ==========================================
+// LOAD DATA FROM SUPABASE
+// ==========================================
+
+async function loadDataFromSupabase() {
+
+    try {
+
+        // ------------------------------
+        // MURID
+        // ------------------------------
+
+        const {
+            data: muridData
+        } = await db
+            .from('murid')
+            .select('*');
+
+
+        if (muridData) {
+
+            let uniqueMap = new Map();
+
+            muridData.forEach(item => {
+
+                let key =
+                    (item.nama || '')
+                        .trim()
+                        .toLowerCase()
+                    + '_'
+                    +
+                    (item.kelas || '')
+                        .trim()
+                        .toLowerCase();
+
+
+                if (!uniqueMap.has(key)) {
+                    uniqueMap.set(key, item);
+                }
+
+            });
+
+            muridList =
+                Array.from(
+                    uniqueMap.values()
+                );
+        }
+
+
+        // ------------------------------
+        // KERJA RUMAH
+        // ------------------------------
+
+        const {
+            data: krData
+        } = await db
+            .from('kerja_rumah')
+            .select('*');
+
+
+        if (krData) {
+            kerjaRumahList = krData;
+        }
+
+
+        // ------------------------------
+        // KEHADIRAN
+        // ------------------------------
+
+        const {
+            data: khData
+        } = await db
+            .from('kehadiran')
+            .select('*');
+
+
+        if (khData) {
+
+            kehadiranData = {};
+
+            khData.forEach(row => {
+
+                if (!kehadiranData[row.tarikh]) {
+                    kehadiranData[row.tarikh] = {};
+                }
+
+                kehadiranData[row.tarikh][row.nama] = {
+                    status: row.status,
+                    catatan: row.catatan
+                };
+
+            });
+        }
+
+
+    } catch (err) {
+
+        console.error(
+            "Ralat Sambungan Supabase:",
+            err
+        );
+    }
+
+
+    // Update dropdowns
+    populateClassDropdowns();
+
+    // Refresh current modules
+    renderKehadiranHarian();
+    renderKerjaRumah();
+}
+
+
+// ==========================================
+// POPULATE CLASS DROPDOWNS
+// ==========================================
+
+function populateClassDropdowns() {
+
+    let classes = [
+        ...new Set(
+            muridList
+                .map(m =>
+                    (m.kelas || '').trim()
+                )
+                .filter(Boolean)
+        )
+    ].sort();
+
+
+    let dropdownIds = [
+        'khKelasSelect',
+        'laporanKelasSelect',
+        'muridFilterKelasSelect'
+    ];
+
+
+    dropdownIds.forEach(id => {
+
+        let el =
+            document.getElementById(id);
+
+        if (!el) return;
+
+
+        let currentVal =
+            el.value;
+
+
+        el.innerHTML =
+            '<option value="Semua">-- Semua Kelas --</option>';
+
+
+        classes.forEach(c => {
+
+            el.innerHTML +=
+                `<option value="${c}">${c}</option>`;
+
+        });
+
+
+        if (classes.includes(currentVal)) {
+            el.value = currentVal;
+        }
+
+    });
+
+
+    // Homework dropdowns
+    renderKerjaRumahDropdowns();
+}
