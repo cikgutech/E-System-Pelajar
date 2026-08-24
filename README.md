@@ -19,3 +19,10 @@ eSystemPro-MASTER/
 │
 └── assets/
     └── logo.png
+
+eSystemPro-MASTER
+│
+├── index.html
+├── css
+├── js
+└── assets
