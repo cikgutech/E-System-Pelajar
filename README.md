@@ -4,14 +4,14 @@ Master File
 // Structure
 eSystemPro-MASTER/
 │
-├── index.html
+├── index.html ← HTML + module functions
 │
 ├── css/
 │   └── style.css
 │
 ├── js/
-│   ├── config.js
-│   ├── app.js
+│   ├── config.js ← branding/client settings
+│   ├── app.js ← core + Supabase + navigation
 │   ├── attendance.js
 │   ├── homework.js
 │   ├── students.js
